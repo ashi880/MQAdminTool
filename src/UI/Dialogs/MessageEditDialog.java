@@ -5,8 +5,6 @@
  */
 package UI.Dialogs;
 
-import MQApi.Enums.LogType;
-import MQApi.Logs.LogWriter;
 import MQApi.Models.MQMessageIdModel;
 import MQApi.Utilities.MQUtility;
 import MQApi.Utilities.CodeConverter;
@@ -20,21 +18,22 @@ import com.ibm.mq.headers.MQDLH;
 import com.ibm.mq.headers.MQDataException;
 import com.ibm.mq.headers.MQHeaderList;
 import com.ibm.mq.headers.MQRFH2;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.ComponentOrientation;
-import java.awt.Font;
+
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.EditorKit;
 import javax.swing.text.NumberFormatter;
@@ -93,9 +92,29 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
         xmlEditorkit.setTagCompletion(true);
         xmlEditorkit.setStyle(XMLStyleConstants.ELEMENT_NAME, Color.BLUE, Font.PLAIN);
         xmlEditorkit.setStyle(XMLStyleConstants.ATTRIBUTE_NAME, Color.MAGENTA, Font.BOLD);
+
         this.textEditorKit = ContentEditorPane.getEditorKit();
         this.ContentEditorPane.setEditorKitForContentType("Text", textEditorKit);
         this.ContentEditorPane.setEditorKitForContentType("XML", xmlEditorkit);
+
+        KeyStroke ctrlC = KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK);
+        final ActionListener ctrlCAction = this.ContentEditorPane.getActionForKeyStroke(ctrlC);
+        this.ContentEditorPane.registerKeyboardAction(new MessageEditCombinedAction(ctrlCAction, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CopyButtonActionPerformed(e);
+            }
+        }), ctrlC, JComponent.WHEN_FOCUSED);
+
+        KeyStroke ctrlV = KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK);
+        final ActionListener ctrlVAction = this.ContentEditorPane.getActionForKeyStroke(ctrlV);
+        this.ContentEditorPane.registerKeyboardAction(new MessageEditCombinedAction(ctrlVAction, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PasteButtonActionPerformed(e);
+            }
+        }), ctrlV, JComponent.WHEN_FOCUSED);
+
         this.QueueManagerLabel.setText(queueManagerName);
         this.QueueNameLabel.setText(queueName);      
         this.ProgressBar.setVisible(false);
@@ -326,6 +345,8 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
     }
     
     private void startLoading(){
+        this.CopyButton.setEnabled(false);
+        this.PasteButton.setEnabled(false);
         this.UpdateButton.setEnabled(false);
         this.ProgressBar.setVisible(true);        
         this.StatusLabel.setVisible(true);
@@ -336,6 +357,8 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
     }
     
     private void finishLoading(boolean fireEvent){
+        this.CopyButton.setEnabled(true);
+        this.PasteButton.setEnabled(true);
         this.UpdateButton.setEnabled(true);
         this.ProgressBar.setVisible(false);
         this.StatusLabel.setVisible(false);
@@ -347,6 +370,7 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
             this.ContentEditorPane.setText("");
             message = new MQMessage();
         }
+
         if(fireEvent){
             FireActionEvent();
         }
@@ -392,6 +416,8 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
         QueueManagerLabel = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         QueueNameLabel = new javax.swing.JLabel();
+        CopyButton = new javax.swing.JButton();
+        PasteButton = new javax.swing.JButton();
         UpdateButton = new javax.swing.JButton();
         Closebutton = new javax.swing.JButton();
         MessagePanel = new javax.swing.JTabbedPane();
@@ -517,6 +543,22 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
                     .addComponent(QueueNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5))
         );
+
+        CopyButton.setText("Copy");
+        CopyButton.setPreferredSize(new java.awt.Dimension(100, 25));
+        CopyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CopyButtonActionPerformed(evt);
+            }
+        });
+
+        PasteButton.setText("Paste");
+        PasteButton.setPreferredSize(new java.awt.Dimension(100, 25));
+        PasteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasteButtonActionPerformed(evt);
+            }
+        });
 
         UpdateButton.setText("Update");
         UpdateButton.setPreferredSize(new java.awt.Dimension(100, 25));
@@ -1092,6 +1134,8 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(KeepPositionCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(CopyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(PasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(UpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Closebutton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1107,6 +1151,8 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(CopyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(PasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(UpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(Closebutton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(StatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1117,6 +1163,29 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void CopyButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        Clipboard cb = Toolkit.getDefaultToolkit()
+                .getSystemClipboard();
+        String editorContent = this.ContentEditorPane.getText();
+        cb.setContents(new StringSelection(editorContent), null);
+    }
+
+    private void PasteButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            Clipboard cb = Toolkit.getDefaultToolkit()
+                    .getSystemClipboard();
+            Transferable t = cb.getContents(null);
+            if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                System.out.println(t.getTransferData(DataFlavor
+                        .stringFlavor));
+                this.ContentEditorPane.setText((String) t.getTransferData(DataFlavor
+                        .stringFlavor));
+            }
+        } catch (UnsupportedFlavorException | IOException ex) {
+            System.out.println("Failed to paste from clipboard");
+        }
+    }
 
     private void UpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateButtonActionPerformed
         if(this.ContentEditorPane.getText().trim().isEmpty()){
@@ -1207,6 +1276,8 @@ public class MessageEditDialog extends ObjectPropertiesDialogBase {
     private javax.swing.JLabel StatusLabel;
     private javax.swing.JPanel TitlePanel;
     private javax.swing.JButton UpdateButton;
+    private javax.swing.JButton CopyButton;
+    private javax.swing.JButton PasteButton;
     private javax.swing.JTextField UserIdTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

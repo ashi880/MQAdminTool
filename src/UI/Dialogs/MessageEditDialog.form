@@ -45,6 +45,10 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="KeepPositionCheckBox" min="-2" pref="135" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="CopyButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="PasteButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="UpdateButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="Closebutton" min="-2" max="-2" attributes="0"/>
@@ -64,6 +68,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="CopyButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="PasteButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="UpdateButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="Closebutton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="StatusLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -158,6 +164,28 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="CopyButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Copy"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[100, 25]"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CopyButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="PasteButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Paste"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[100, 25]"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PasteButtonActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JButton" name="UpdateButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Update"/>

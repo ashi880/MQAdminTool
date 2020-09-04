@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ConnectionSetting>
+  <ConnectionDetail>
+    <Host>p1.example.org</Host>
+    <QueueManager>P1</QueueManager>
+    <Channel>CH.ABS.TO.P1</Channel>
+    <Port>41721</Port>
+    <User/>
+    <Password/>
+  </ConnectionDetail>
+  <ConnectionDetail>
+    <Host>t1.example.org</Host>
+    <QueueManager>T1</QueueManager>
+    <Channel>CH.ABS.TO.T1</Channel>
+    <Port>41731</Port>
+    <User/>
+    <Password/>
+  </ConnectionDetail>
+  <ConnectionDetail>
+    <Host>q1.example.org</Host>
+    <QueueManager>MQQ1</QueueManager>
+    <Channel>CH.ABS.TO.Q1</Channel>
+    <Port>41751</Port>
+    <User/>
+    <Password/>
+  </ConnectionDetail>
+  <ConnectionDetail>
+    <Host>d1.example.org</Host>
+    <QueueManager>D1</QueueManager>
+    <Channel>CH.D1.TO.ABS</Channel>
+    <Port>41711</Port>
+    <User/>
+    <Password/>
+  </ConnectionDetail>
+</ConnectionSetting>

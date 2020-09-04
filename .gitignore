@@ -2,3 +2,9 @@
 /dist/
 /nbproject/private/
 /build/
+/.idea/
+Settings.xml
+ConnectionSettings.xml
+*.iml
+.DS_Store
+/out/
